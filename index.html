@@ -4,52 +4,255 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI & Security Vibe Blog</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; margin: 0; background-color: #f4f7f6; color: #333; }
-        header { background: #2c3e50; color: white; padding: 2rem; text-align: center; }
-        nav { background: #fff; padding: 10px; text-align: center; border-bottom: 1px solid #ddd; }
-        nav a { margin: 0 15px; text-decoration: none; color: #2c3e50; font-weight: bold; }
-        main { max-width: 800px; margin: 20px auto; padding: 20px; }
-        .post-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .post-title { color: #e67e22; margin-top: 0; }
-        .post-date { font-size: 0.8rem; color: #999; }
-        .post-content { line-height: 1.6; margin-top: 15px; }
-        footer { text-align: center; padding: 20px; font-size: 0.9rem; color: #777; }
+        :root {
+            --bg-color: oklch(98% 0.01 200);
+            --header-bg: oklch(25% 0.05 240);
+            --primary-color: oklch(65% 0.2 30);
+            --secondary-color: oklch(45% 0.15 220);
+            --text-color: oklch(20% 0.02 240);
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Noto Sans KR', sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            background-image: 
+                radial-gradient(at 0% 0%, oklch(90% 0.05 200) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, oklch(90% 0.05 30) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+
+        header { 
+            background: var(--header-bg); 
+            color: white; 
+            padding: 4rem 2rem; 
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        header h1 { 
+            font-family: 'Outfit', sans-serif; 
+            font-size: 3rem; 
+            margin: 0; 
+            letter-spacing: -1px;
+        }
+        header p { opacity: 0.8; font-weight: 300; margin-top: 10px; }
+
+        nav { 
+            position: sticky; 
+            top: 0; 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(10px);
+            padding: 15px; 
+            text-align: center; 
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        nav a { 
+            margin: 0 20px; 
+            text-decoration: none; 
+            color: var(--text-color); 
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav a:hover { color: var(--primary-color); }
+        nav a.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
+
+        main { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        
+        #view-home, #view-about, #view-contact { display: none; }
+        #view-home.active, #view-about.active, #view-contact.active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            margin-bottom: 30px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+        .post-card:hover { transform: translateY(-5px); }
+        .post-title { color: var(--primary-color); margin-top: 0; font-family: 'Outfit', sans-serif; font-size: 1.8rem; }
+        .post-meta { display: flex; gap: 15px; font-size: 0.85rem; color: #888; margin-bottom: 15px; }
+        .post-category { background: oklch(90% 0.05 30); color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        
+        .post-content { line-height: 1.8; }
+        .post-content h3 { color: var(--secondary-color); margin-top: 30px; }
+        .post-content p { margin-bottom: 15px; }
+
+        .about-section, .contact-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        footer { text-align: center; padding: 40px; font-size: 0.9rem; color: #777; margin-top: 40px; }
+
+        /* Detail View */
+        #post-detail { display: none; }
+        #post-detail.active { display: block; animation: fadeIn 0.5s ease; }
+        .back-btn { 
+            display: inline-block; 
+            margin-bottom: 20px; 
+            padding: 8px 16px; 
+            background: var(--secondary-color); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
+
 <header>
-    <h1>나의 AI 지식 블로그</h1>
-    <p>비전공자도 이해하는 디지털 포렌식 & 보안 이야기</p>
+    <h1>AI & Security Vibe</h1>
+    <p>디지털 포렌식 전문가를 꿈꾸는 비전공자의 기록</p>
 </header>
+
 <nav>
-    <a href="#">Home</a>
-    <a href="#">About</a>
-    <a href="#">Security</a>
-    <a href="#">Contact</a>
+    <a href="#home" class="nav-link active" data-view="home">Home</a>
+    <a href="#about" class="nav-link" data-view="about">About</a>
+    <a href="#contact" class="nav-link" data-view="contact">Contact</a>
 </nav>
-<main id="post-container"></main>
+
+<main>
+    <section id="view-home" class="view active">
+        <div id="post-list"></div>
+    </section>
+
+    <section id="view-about" class="view">
+        <div class="about-section">
+            <h2>About Me</h2>
+            <p>안녕하세요! 저는 비전공자로서 AI와 사이버 보안의 매력에 빠져 공부하고 있는 개발자입니다.</p>
+            <p>어렵게만 느껴지는 기술들을 누구나 이해할 수 있는 언어로 풀어서 설명하는 것을 좋아합니다.</p>
+            <p>현재는 디지털 포렌식과 AI를 결합한 효율적인 수사 기법에 관심을 가지고 연구하고 있습니다.</p>
+        </div>
+    </section>
+
+    <section id="view-contact" class="view">
+        <div class="contact-section">
+            <h2>Contact</h2>
+            <p>궁금한 점이나 협업 제안은 언제든 환영합니다!</p>
+            <p>📧 Email: kyneticin2nity@example.com</p>
+            <p>🔗 GitHub: <a href="https://github.com/kyneticin2nity-coder" target="_blank">kyneticin2nity-coder</a></p>
+        </div>
+    </section>
+
+    <section id="post-detail" class="view">
+        <a href="#home" class="back-btn" id="back-to-list">← 목록으로</a>
+        <div id="detail-content"></div>
+    </section>
+</main>
+
 <footer>
-    <p>&copy; 2026 AI Vibe Blog. Built with Firebase & Cloudflare.</p>
+    <p>&copy; 2026 AI Vibe Blog. Built with Passion & Modern Web Tech.</p>
 </footer>
+
 <script type="module">
-    const newPost = {
-        title: "비전공자도 알기 쉬운 AI와 디지털 포렌식의 만남",
-        date: "2026-02-26",
-        content: "### 🚀 드디어 시작하는 첫 블로그!\n\n안녕하세요! AI와 보안 이야기를 바이브 있게 풀어보는 첫 게시글입니다.\n\n(내용 생략 - 배포 테스트용)"
-    };
-    const postContainer = document.getElementById('post-container');
-    const parsedContent = typeof marked !== 'undefined' ? marked.parse(newPost.content) : newPost.content;
-    postContainer.innerHTML = "`" +
-        "<article class=\"post-card\">".replace(/\n/g, '\n') +
-        `
-            <h2 class="post-title">${newPost.title}</h2>
-            <p class="post-date">${newPost.date}</p>
-            <div class="post-content">${parsedContent}</div>
-        </article>
-    `;
+    let allPosts = [];
+
+    async function init() {
+        try {
+            const response = await fetch('posts.json');
+            allPosts = await response.json();
+            renderPostList();
+            handleRouting();
+        } catch (error) {
+            console.error('Failed to load posts:', error);
+        }
+    }
+
+    function renderPostList() {
+        const postList = document.getElementById('post-list');
+        postList.innerHTML = allPosts.map(post => `
+            <article class="post-card" onclick="location.hash = '#post/${post.id}'">
+                <div class="post-meta">
+                    <span class="post-date">${post.date}</span>
+                    <span class="post-category">${post.category}</span>
+                </div>
+                <h2 class="post-title">${post.title}</h2>
+                <p>${post.summary}</p>
+            </article>
+        `).join('');
+    }
+
+    function showPostDetail(id) {
+        const post = allPosts.find(p => p.id == id);
+        if (!post) return;
+
+        const detailContent = document.getElementById('detail-content');
+        detailContent.innerHTML = `
+            <article class="post-card">
+                <div class="post-meta">
+                    <span class="post-date">${post.date}</span>
+                    <span class="post-category">${post.category}</span>
+                </div>
+                <h1 class="post-title">${post.title}</h1>
+                <div class="post-content">${marked.parse(post.content)}</div>
+            </article>
+        `;
+        
+        switchView('post-detail');
+    }
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const target = document.getElementById(viewId.startsWith('view-') ? viewId : 'view-' + viewId);
+        if (target) {
+            target.classList.add('active');
+        } else if (viewId === 'post-detail') {
+            document.getElementById('post-detail').classList.add('active');
+        }
+
+        // Update nav links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.toggle('active', link.dataset.view === viewId);
+        });
+    }
+
+    function handleRouting() {
+        const hash = location.hash || '#home';
+        if (hash.startsWith('#post/')) {
+            const id = hash.split('/')[1];
+            showPostDetail(id);
+        } else {
+            const view = hash.replace('#', '');
+            switchView(view);
+        }
+    }
+
+    window.addEventListener('hashchange', handleRouting);
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            location.hash = e.target.getAttribute('href');
+        });
+    });
+
+    document.getElementById('back-to-list').addEventListener('click', (e) => {
+        e.preventDefault();
+        location.hash = '#home';
+    });
+
+    init();
 </script>
 </body>
 </html>
