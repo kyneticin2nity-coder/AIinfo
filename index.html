@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI & Security Vibe Blog</title>
+    <title>AI & Security 정보 저장소</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: oklch(98% 0.01 200);
-            --header-bg: oklch(25% 0.05 240);
-            --primary-color: oklch(65% 0.2 30);
-            --secondary-color: oklch(45% 0.15 220);
-            --text-color: oklch(20% 0.02 240);
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
-            --radius: 16px;
+            --bg-color: oklch(99% 0.005 240);
+            --header-bg: oklch(20% 0.04 240);
+            --primary-color: oklch(55% 0.15 240);
+            --secondary-color: oklch(45% 0.12 200);
+            --text-color: oklch(15% 0.02 240);
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
         }
 
         * { box-sizing: border-box; }
@@ -25,35 +25,30 @@
             margin: 0; 
             background-color: var(--bg-color); 
             color: var(--text-color);
-            background-image: 
-                radial-gradient(at 0% 0%, oklch(90% 0.05 200) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, oklch(90% 0.05 30) 0px, transparent 50%);
-            min-height: 100vh;
+            line-height: 1.6;
         }
 
         header { 
             background: var(--header-bg); 
             color: white; 
-            padding: 4rem 2rem; 
+            padding: 3rem 2rem; 
             text-align: center;
-            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
         }
         header h1 { 
             font-family: 'Outfit', sans-serif; 
-            font-size: 3rem; 
+            font-size: 2.5rem; 
             margin: 0; 
-            letter-spacing: -1px;
         }
-        header p { opacity: 0.8; font-weight: 300; margin-top: 10px; }
+        header p { opacity: 0.8; font-weight: 300; margin-top: 10px; max-width: 600px; margin-inline: auto; }
 
         nav { 
             position: sticky; 
             top: 0; 
-            background: rgba(255, 255, 255, 0.7); 
+            background: rgba(255, 255, 255, 0.9); 
             backdrop-filter: blur(10px);
-            padding: 15px; 
+            padding: 12px; 
             text-align: center; 
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
             z-index: 100;
         }
         nav a { 
@@ -61,61 +56,73 @@
             text-decoration: none; 
             color: var(--text-color); 
             font-weight: 500;
-            transition: color 0.3s;
+            font-size: 0.95rem;
         }
         nav a:hover { color: var(--primary-color); }
-        nav a.active { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); }
+        nav a.active { color: var(--primary-color); font-weight: 700; }
 
-        main { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        main { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
         
-        #view-home, #view-about, #view-contact { display: none; }
-        #view-home.active, #view-about.active, #view-contact.active { display: block; animation: fadeIn 0.5s ease; }
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #post-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
         }
 
         .post-card { 
             background: var(--card-bg); 
-            padding: 30px; 
-            margin-bottom: 30px; 
+            padding: 25px; 
             border-radius: var(--radius); 
             box-shadow: var(--shadow);
-            border: 1px solid rgba(255,255,255,0.5);
-            transition: transform 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
         }
-        .post-card:hover { transform: translateY(-5px); }
-        .post-title { color: var(--primary-color); margin-top: 0; font-family: 'Outfit', sans-serif; font-size: 1.8rem; }
-        .post-meta { display: flex; gap: 15px; font-size: 0.85rem; color: #888; margin-bottom: 15px; }
-        .post-category { background: oklch(90% 0.05 30); color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+        .post-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .post-title { color: var(--text-color); margin: 10px 0; font-size: 1.4rem; font-weight: 700; }
+        .post-meta { display: flex; gap: 10px; font-size: 0.8rem; color: #777; align-items: center; }
+        .post-category { background: var(--bg-color); color: var(--primary-color); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
         
-        .post-content { line-height: 1.8; }
-        .post-content h3 { color: var(--secondary-color); margin-top: 30px; }
+        .post-content { line-height: 1.8; color: #333; }
+        .post-content h3 { color: var(--header-bg); border-left: 4px solid var(--primary-color); padding-left: 12px; margin-top: 35px; }
         .post-content p { margin-bottom: 15px; }
+        .post-content strong { color: #000; }
 
-        .about-section, .contact-section {
+        .info-section {
             background: var(--card-bg);
             padding: 40px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
 
-        footer { text-align: center; padding: 40px; font-size: 0.9rem; color: #777; margin-top: 40px; }
+        footer { text-align: center; padding: 40px; font-size: 0.85rem; color: #888; border-top: 1px solid rgba(0,0,0,0.05); margin-top: 60px; }
 
         /* Detail View */
-        #post-detail { display: none; }
-        #post-detail.active { display: block; animation: fadeIn 0.5s ease; }
+        #post-detail .detail-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
         .back-btn { 
             display: inline-block; 
             margin-bottom: 20px; 
             padding: 8px 16px; 
-            background: var(--secondary-color); 
+            background: var(--header-bg); 
             color: white; 
             text-decoration: none; 
-            border-radius: 8px;
-            font-size: 0.9rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -123,14 +130,13 @@
 <body>
 
 <header>
-    <h1>AI & Security Vibe</h1>
-    <p>디지털 포렌식 전문가를 꿈꾸는 비전공자의 기록</p>
+    <h1>AI & Security 지식 아카이브</h1>
+    <p>인공지능 기술과 사이버 보안에 관한 전문적인 정보와 분석을 제공합니다.</p>
 </header>
 
 <nav>
-    <a href="#home" class="nav-link active" data-view="home">Home</a>
-    <a href="#about" class="nav-link" data-view="about">About</a>
-    <a href="#contact" class="nav-link" data-view="contact">Contact</a>
+    <a href="#home" class="nav-link active" data-view="home">정보 목록</a>
+    <a href="#about" class="nav-link" data-view="about">아카이브 소개</a>
 </nav>
 
 <main>
@@ -139,31 +145,28 @@
     </section>
 
     <section id="view-about" class="view">
-        <div class="about-section">
-            <h2>About Me</h2>
-            <p>안녕하세요! 저는 비전공자로서 AI와 사이버 보안의 매력에 빠져 공부하고 있는 개발자입니다.</p>
-            <p>어렵게만 느껴지는 기술들을 누구나 이해할 수 있는 언어로 풀어서 설명하는 것을 좋아합니다.</p>
-            <p>현재는 디지털 포렌식과 AI를 결합한 효율적인 수사 기법에 관심을 가지고 연구하고 있습니다.</p>
-        </div>
-    </section>
-
-    <section id="view-contact" class="view">
-        <div class="contact-section">
-            <h2>Contact</h2>
-            <p>궁금한 점이나 협업 제안은 언제든 환영합니다!</p>
-            <p>📧 Email: kyneticin2nity@example.com</p>
-            <p>🔗 GitHub: <a href="https://github.com/kyneticin2nity-coder" target="_blank">kyneticin2nity-coder</a></p>
+        <div class="info-section">
+            <h2>데이터 중심의 정보 전달</h2>
+            <p>본 아카이브는 인공지능(AI)과 사이버 보안 분야의 핵심 개념, 최신 기술 동향, 그리고 보안 전략에 관한 객관적인 데이터를 수집하고 정리하는 것을 목적으로 합니다.</p>
+            <p>디지털 포렌식 분석 기법, 엔드포인트 보안, 생성형 AI의 안전성 등 전문적인 주제를 다루며, 모든 콘텐츠는 정보 전달의 효율성을 최우선으로 구성됩니다.</p>
+            <h3>주요 카테고리</h3>
+            <ul>
+                <li><strong>Security/AI:</strong> AI를 활용한 보안 기술 및 포렌식 분석</li>
+                <li><strong>Security:</strong> 네트워크 및 엔드포인트 보안 전략</li>
+                <li><strong>AI/Safety:</strong> AI 모델의 취약점 및 안전성 강화 방안</li>
+                <li><strong>Intelligence:</strong> 위협 인텔리전스 및 선제적 방어 기법</li>
+            </ul>
         </div>
     </section>
 
     <section id="post-detail" class="view">
-        <a href="#home" class="back-btn" id="back-to-list">← 목록으로</a>
-        <div id="detail-content"></div>
+        <a href="#home" class="back-btn" id="back-to-list">← 목록으로 돌아가기</a>
+        <div id="detail-content" class="detail-container"></div>
     </section>
 </main>
 
 <footer>
-    <p>&copy; 2026 AI Vibe Blog. Built with Passion & Modern Web Tech.</p>
+    <p>&copy; 2026 AI & Security Knowledge Archive. All rights reserved.</p>
 </footer>
 
 <script type="module">
@@ -185,11 +188,11 @@
         postList.innerHTML = allPosts.map(post => `
             <article class="post-card" onclick="location.hash = '#post/${post.id}'">
                 <div class="post-meta">
-                    <span class="post-date">${post.date}</span>
                     <span class="post-category">${post.category}</span>
+                    <span class="post-date">${post.date}</span>
                 </div>
                 <h2 class="post-title">${post.title}</h2>
-                <p>${post.summary}</p>
+                <p style="font-size: 0.9rem; color: #555;">${post.summary}</p>
             </article>
         `).join('');
     }
@@ -200,14 +203,13 @@
 
         const detailContent = document.getElementById('detail-content');
         detailContent.innerHTML = `
-            <article class="post-card">
-                <div class="post-meta">
-                    <span class="post-date">${post.date}</span>
-                    <span class="post-category">${post.category}</span>
-                </div>
-                <h1 class="post-title">${post.title}</h1>
-                <div class="post-content">${marked.parse(post.content)}</div>
-            </article>
+            <div class="post-meta">
+                <span class="post-category">${post.category}</span>
+                <span class="post-date">${post.date}</span>
+            </div>
+            <h1 style="font-size: 2rem; margin-top: 10px;">${post.title}</h1>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
+            <div class="post-content">${marked.parse(post.content)}</div>
         `;
         
         switchView('post-detail');
